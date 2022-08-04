@@ -1,43 +1,35 @@
-version: '2'
+# install docker
 
-services:
-  sonarqube:
-    image: sonarqube
-    ports:
-      - '9000:9000'
-    networks:
-      - sonarnet
-    environment:
-      - sonar.jdbc.username=sonar
-      - sonar.jdbc.password=sonar
-      - sonar.jdbc.url=jdbc:postgresql://db:5432/sonar
-    volumes:
-      - sonarqube_conf:/opt/sonarqube/conf
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_extensions:/opt/sonarqube/extensions
-    ulimits:
-      nofile:
-       soft: 65536
-       hard: 65536
-  db:
-    image: postgres
-    networks:
-      - sonarnet
-    environment:
-      - POSTGRES_USER=sonar
-      - POSTGRES_PASSWORD=sonar
-    volumes:
-      - postgresql:/var/lib/postgresql
-      # This needs explicit mapping due to https://github.com/docker-library/postgres/blob/4e48e3228a30763913ece952c611e5e9b95c8759/Dockerfile.template#L52
-      - postgresql_data:/var/lib/postgresql/data
+sudo yum update
+sudo yum search docker
+sudo yum info docker
+sudo yum install docker
+sudo usermod -a -G docker ec2-user
+id ec2-user
+newgrp docker
 
-networks:
-  sonarnet:
-    driver: bridge
+# install docker-compose
 
-volumes:
-  sonarqube_conf:
-  sonarqube_data:
-  sonarqube_extensions:
-  postgresql:
-  postgresql_data:
+sudo yum install python3-pip
+sudo pip3 install docker-compose # with root access
+pip3 install --user docker-compose # without root access for security reasons
+
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+
+# install java
+sudo yum install java-11-amazon-corretto-headless
+
+# install git
+sudo yum install git -y
+
+# install maven
+
+sudo mkdir -p /usr/share/maven /usr/share/maven/ref && sudo curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz && sudo echo "${SHA}  /tmp/apache-maven.tar.gz" | sha512sum -c - && sudo tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 && sudo rm -f /tmp/apache-maven.tar.gz && sudo ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+
+#install sonar
+sudo sysctl -w vm.max_map_count=262144
+mkdir sonar
+sudo docker–compose up -f SonarDockerCompose.yml
+docker ps
+
