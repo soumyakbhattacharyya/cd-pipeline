@@ -31,3 +31,6 @@ sudo sysctl -w vm.max_map_count=262144
 mkdir sonar
 sudo docker–compose up -f SonarDockerCompose.yml
 docker ps
+
+
+sudo mkdir -p /usr/share/maven /usr/share/maven/ref && sudo curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz && sudo echo "${SHA}  /tmp/apache-maven.tar.gz" | sha512sum -c - && sudo tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 && sudo rm -f /tmp/apache-maven.tar.gz && sudo ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
